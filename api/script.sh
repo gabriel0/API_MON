@@ -45,7 +45,9 @@ list_processes() {
   echo "PID %CPU %MEM COMMAND"
 
   # Utilizar ps para listar procesos y ordenarlos según la opción seleccionada
-  ps -eo pid,%cpu,%mem,cmd --sort=$sort_option | head -n 10
+  #ps -eo pid,%cpu,%mem,cmd --sort=$sort_option | head -n 10
+  ps -eo pid,%cpu,%mem,cmd --sort=$sort_option | grep -v -E "ps -eo|head -n|sh /app/script.sh" | head -n 10
+
 }
 
 # Función para listar el uso de espacio de carpetas en el primer nivel de un directorio
