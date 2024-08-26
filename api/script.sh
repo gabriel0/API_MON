@@ -45,7 +45,6 @@ list_processes() {
   echo "PID %CPU %MEM COMMAND"
 
   # Utilizar ps para listar procesos y ordenarlos según la opción seleccionada
-  #ps -eo pid,%cpu,%mem,cmd --sort=$sort_option | head -n 10
   ps -eo pid,%cpu,%mem,cmd --sort=$sort_option | grep -v -E "ps -eo|head -n|sh /app/script.sh" | head -n 10
 
 }
@@ -62,7 +61,7 @@ list_filesystem_usage() {
     exit 1
   fi
 
-  echo "Tamaño de las carpetas en el primer nivel de anidación en $1:"
+  echo "Tamaño de las carpetas en el primer nivel de anidacion en $1:"
   du -sh "$1"/*
 }
 
