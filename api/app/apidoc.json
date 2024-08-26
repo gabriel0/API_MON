@@ -1,0 +1,12 @@
+{
+    "name": "apiMon",
+    "title": "meliMetrics",
+    "sampleUrl": "http://127.0.0.1:5000",
+    "url": "http://127.0.0.1:5000",
+    "template": {
+        "showRequiredLabels": true,
+        "withCompare": true,
+        "withGenerator": true,
+        "aloneDisplay": true
+    }
+}
