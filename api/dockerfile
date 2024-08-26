@@ -1,0 +1,28 @@
+# Usar una imagen base de Python
+FROM python:3.9-slim
+
+ARG port
+
+# Instalar cron y dependencias de Python, descargar el script y dar permisos
+RUN apt-get update && apt-get install procps -y cron \
+    && pip install flask psutil requests    
+
+# Establecer el directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Copiar los archivos requeridos al contenedor
+COPY app/main.py app/check_and_download.py script.sh /app/
+
+RUN chmod +x /app/script.sh
+
+# Configurar cron job para ejecutar cada 24 horas
+RUN echo "0 0 * * * python /app/check_and_download.py" > /etc/cron.d/script_update \
+    && chmod 0644 /etc/cron.d/script_update \
+    && crontab /etc/cron.d/script_update
+
+# Exponer el puerto de la API (puedes cambiar $port por un número si es constante)
+ENV FINAL_PORT=$port
+EXPOSE $FINAL_PORT
+
+# Iniciar el servicio cron y la aplicación Flask
+CMD ["sh", "-c", "cron && python main.py"]
