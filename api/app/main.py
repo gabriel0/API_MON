@@ -2,23 +2,81 @@ from flask import Flask, request, jsonify, send_from_directory
 import subprocess
 import psutil
 import os
+import jwt
+from datetime import datetime, timedelta
 
-app = Flask(__name__, static_folder='assets') 
+app = Flask(__name__, static_folder='assets')
+
+# Clave secreta para firmar los tokens (reemplaza con una clave segura)
+SECRET_KEY = 'secretHash'
+
+# Clave maestra secreta (reemplaza con una clave segura)
+MASTER_KEY = 'Pate2001'
+
+# Función para generar el token
+def generate_token():
+    payload = {
+        'exp': datetime.utcnow() + timedelta(minutes=5)  # Expira en 5 minutos
+    }
+    token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+    return token
+
+# Decorador para requerir el token (corregido)
+def require_token(func):
+    def decorated_function(*args, **kwargs):
+        token = request.headers.get('Authorization')
+        if not token:
+            return jsonify({'error': 'Token faltante'}), 401
+
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            return jsonify({'error': 'Token expirado'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'error': 'Token inválido'}), 401
+
+        return func(*args, **kwargs)
+    decorated_function.__name__ = func.__name__  # Asigna el nombre original
+    return decorated_function
 
 # Ruta para documentación
 @app.route('/')
 def home():
     return send_from_directory('.', 'index.html')
 
-# Endpoint para obtener métricas de uso del sistema
+# Endpoint para obtener el token (protegido con clave maestra)
+@app.route('/get_token', methods=['POST'])
+def get_token():
+    """
+    @api {post} /get_token Devuelve un token para el uso de los metodos expuestos por esta api
+    @apiName get_token
+    @apiVersion 1.0.0
+    @apiGroup autorizaciones
+    @apiHeader {String} master_key master key que permite obtener un token
+    @apiSuccess {json} Result Devuelve un token
+    @apiSuccessExample {json} Success-Response:
+        {"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjQ2OTUxMzF9.F8GA_soxzWSkjhJve5mxQWy0gfuIF3nuOPGvr-sF824"}
+    """       
+    data = request.json
+    provided_key = data.get('master_key')
+
+    if provided_key != MASTER_KEY:
+        return jsonify({'error': 'Clave maestra incorrecta'}), 401
+
+    token = generate_token()
+    return jsonify({'token': token})
+
+# Endpoint para obtener métricas de uso del sistema (protegido)
 @app.route('/metrics', methods=['GET'])
+@require_token 
 def get_metrics():
     """
     @api {get} /metrics Lista metricas de cpu, memoria, disco con sus valores
     @apiName metrics
     @apiVersion 1.0.0
     @apiGroup metricas
-    @apiSuccess {json} Result Devueve una respuesta en formato json con los valores de cada metrica
+    @apiHeader {String} Authorization Token JWT obtenido de /get_token
+    @apiSuccess {json} Result Devuelve una respuesta en formato json con los valores de cada metrica
     @apiSuccessExample {json} Success-Response:
         [
             {
@@ -94,14 +152,16 @@ def get_metrics():
     except Exception as e:
         return jsonify({'error': 'Error al obtener métricas', 'details': str(e)}), 500
 
-# Endpoint para ejecutar el script Bash
+# Endpoint para ejecutar el script Bash (protegido)
 @app.route('/run_script', methods=['POST'])
+@require_token 
 def run_script():
     """
     @api {post} /run_script Permite invocar un script con sus parametros
     @apiName run_script
     @apiVersion 1.0.0
     @apiGroup scripts
+    @apiHeader {String} Authorization Token JWT obtenido de /get_token
     @apiParam {json} option Indicar el tipo de opcion: "cpu, disk, mem"
     @apiSuccess {json} Result Devuelve una lista en formato string de datos relacionados al tipo de "option"
     @apiSuccessExample {json} Success-Response:
