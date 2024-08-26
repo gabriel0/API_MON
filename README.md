@@ -66,15 +66,33 @@ API para obtener metricas de uso de cpu, memoriua y disco del equipo donde se ej
 
 ## Actualizacion de la documentacion (apidocjs)
 
-Posicionado en la raiz del proyecto (/app), ejecutar: "apidoc -i ./ -o ./". Esto generará la documentacion de la api
+**Instalacion de apidoc:**
+
+```bash
+npm install -g apidoc
+```
+
+**Generacion de documentacion:**
+
+Posicionado en la raiz del proyecto (api), ejecutar
+
+```bash
+apidoc -i ./ -o ./
+```
+
+***Esto generará la documentacion de la api dentro de la carpeta app***
 
 ## Construccion de imagen
 
-Ejecutar un docker build . -t IMAGEN:TAG --build-arg port=5000
+```bash
+docker build . -t IMAGEN:TAG --build-arg port=5000
+```
 
 ## Ejecucio de la imagen
 
+```bash
 docker run -d -p HOST_PORT:CONTAINER_PORT IMAGEN:TAG
+```
 
 ## Obtencion de token
 
