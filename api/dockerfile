@@ -25,6 +25,15 @@ RUN echo "*/5 * * * * /usr/local/bin/python /app/check_and_download.py >> /var/l
     && chmod 0644 /etc/cron.d/script_update \
     && crontab /etc/cron.d/script_update
 
+# Variables de aplicacion
+ENV S3_SCRIPT_URL = 'https://eval-s3-py-script.s3.amazonaws.com/script.sh' 
+ENV LOCAL_SCRIPT_PATH = '/app/script.sh'
+ENV TEMP_SCRIPT_PATH = '/app/temp_script.sh'
+## Clave secreta para firmar los tokens
+ENV SECRET_KEY = 'secretHash'
+## Clave maestra secreta
+ENV MASTER_KEY = 'Pate2001'
+
 # Exponer el puerto de la API (puedes cambiar $port por un número si es constante)
 ENV FINAL_PORT=${port:-5000}
 EXPOSE $FINAL_PORT
