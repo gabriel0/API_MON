@@ -4,28 +4,29 @@ FROM python:3.9-slim
 ARG port
 
 # Instalar cron y dependencias de Python
-RUN apt-get update && apt-get install procps dos2unix -y cron \
-    && pip install flask psutil requests    
+RUN apt-get update && apt-get install -y \
+    cron procps dos2unix \
+    && pip install flask psutil requests PyJWT \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Establecer el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
 # Copiar los archivos requeridos al contenedor
-COPY app/main.py app/check_and_download.py script.sh /app/
+COPY app/assets/ /app/assets/
+COPY app/main.py app/check_and_download.py app/apidoc.json app/index.html script.sh /app/
 
-# Convertir el script a formato Unix
-RUN dos2unix /app/script.sh
+# Convertir el script a formato Unix y darle permisos de ejecución
+RUN dos2unix /app/script.sh && chmod +x /app/script.sh
 
-# Agrego permisos de ejecucion al script.sh
-RUN chmod +x /app/script.sh
-
-# Configurar cron job para ejecutar cada 24 horas
-RUN echo "*/15 * * * * python /app/check_and_download.py" > /etc/cron.d/script_update \
+# Configurar cron job para ejecutar y redirigir la salida a un log
+RUN echo "*/5 * * * * /usr/local/bin/python /app/check_and_download.py >> /var/log/cron.log 2>&1" > /etc/cron.d/script_update \
     && chmod 0644 /etc/cron.d/script_update \
     && crontab /etc/cron.d/script_update
 
 # Exponer el puerto de la API (puedes cambiar $port por un número si es constante)
-ENV FINAL_PORT=$port
+ENV FINAL_PORT=${port:-5000}
 EXPOSE $FINAL_PORT
 
 # Iniciar el servicio cron y la aplicación Flask
