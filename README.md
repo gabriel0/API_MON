@@ -49,7 +49,16 @@ API para obtener metricas de uso de cpu, memoriua y disco del equipo donde se ej
 ## Funciones y programas
 
 - check_and_download:
-    Este metodo valida que el script.sh, almacenado en este caso en S3 (aws), esté actualizado y en caso de haber cambios lo descarga y remplaza el actual. L intención es mantener actualizado el script de multiples instancias para evitar re-construir la imagen con cada cambio de script
+    Este metodo valida que el script.sh, almacenado en este caso en S3 (aws), esté actualizado y en caso de haber cambios lo descarga y remplaza el actual. La intención es mantener actualizado el script de multiples instancias para evitar re-construir la imagen con cada cambio de script. El log queda en /var/log/crond.log
+
+```log
+    Script descargado exitosamente desde https://eval-s3-py-script.s3.amazonaws.com/script.sh
+    Script actualizado el 2024-08-26 21:15:01
+    Script descargado exitosamente desde https://eval-s3-py-script.s3.amazonaws.com/script.sh
+    No hay nueva versión del script disponible.
+    Script descargado exitosamente desde https://eval-s3-py-script.s3.amazonaws.com/script.sh
+    No hay nueva versión del script disponible.
+```
 
 - main:
     Es la funcion principal de la API, la cual tiene una seria de funciones para generar un otken, listar metricas, ejecutar un script
