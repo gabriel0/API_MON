@@ -1,9 +1,9 @@
 from flask import Flask, request, jsonify, send_from_directory
+from datetime import datetime, timedelta
 import subprocess
 import psutil
 import os
 import jwt
-from datetime import datetime, timedelta
 
 app = Flask(__name__, static_folder='assets')
 
@@ -55,8 +55,12 @@ def get_token():
     @apiHeader {String} master_key master key que permite obtener un token
     @apiSuccess {json} Result Devuelve un token
     @apiSuccessExample {json} Success-Response:
-        {"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjQ2OTUxMzF9.F8GA_soxzWSkjhJve5mxQWy0gfuIF3nuOPGvr-sF824"}
-    """       
+        [
+            {
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjQ2OTUxMzF9.F8GA_soxzWSkjhJve5mxQWy0gfuIF3nuOPGvr-sF824"
+            }
+        ]
+    """
     data = request.json
     provided_key = data.get('master_key')
 
@@ -189,4 +193,4 @@ def run_script():
 
 if __name__ == '__main__':
     port = int(os.getenv('FINAL_PORT', 5000))  # Lee el puerto desde la variable de entorno, o usa 5000 por defecto
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=port)

@@ -1,5 +1,6 @@
 {
     "name": "apiMon",
+    "version": "1.0.0",
     "title": "meliMetrics",
     "sampleUrl": "http://127.0.0.1:5000",
     "url": "http://127.0.0.1:5000",
