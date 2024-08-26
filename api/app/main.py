@@ -55,48 +55,22 @@ def get_metrics():
         return jsonify({'error': 'Error al obtener métricas', 'details': str(e)}), 500
 
 # Endpoint para ejecutar el script Bash
+
 @app.route('/run_script', methods=['POST'])
 def run_script():
+    data = request.json
+    option = data.get('option')
+    directory = data.get('directory', '')
+
+    # Comando con la ruta completa
+    command = f"/app/script.sh {option} {directory}"
+    
     try:
-        # Obtener los datos del cuerpo de la solicitud POST
-        data = request.json
-        if not data:
-            return jsonify({'error': 'No se recibió contenido JSON en la solicitud'}), 400
-
-        # Imprimir datos recibidos para depuración
-        print(f"Datos recibidos: {data}")
-
-        if 'option' not in data:
-            return jsonify({'error': 'Falta el parámetro "option" en la solicitud', 'data_received': data}), 400
-
-        option = data['option']
-        directory = data.get('directory', '')
-
-        # Validar la opción proporcionada
-        if option not in ['cpu', 'mem', 'disk']:
-            return jsonify({'error': 'Opción no válida. Debe ser "cpu", "mem" o "disk".', 'option_received': option}), 400
-
-        # Construir el comando a ejecutar
-        command = ['./app/script.sh', option]
-        
-        # Añadir el directorio si la opción es 'disk'
-        if option == 'disk':
-            if not directory:
-                return jsonify({'error': 'Se requiere un directorio para la opción "disk".', 'directory_received': directory}), 400
-            command.append(directory)
-
-        # Ejecutar el script Bash con los argumentos proporcionados
-        result = subprocess.run(command, capture_output=True, text=True, check=True)
-
-        # Devolver la salida del script como respuesta JSON
-        return jsonify({'output': result.stdout}), 200
-
+        result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
+        return jsonify({'details': result.stdout, 'error': None})
     except subprocess.CalledProcessError as e:
-        # Manejar errores en la ejecución del script
-        return jsonify({'error': 'Error al ejecutar el script', 'details': e.stderr}), 500
-    except Exception as e:
-        # Manejar errores genéricos
-        return jsonify({'error': 'Error al procesar la solicitud', 'details': str(e)}), 500
+        return jsonify({'details': e.output, 'error': str(e)})
+
 
 if __name__ == '__main__':
     port = int(os.getenv('FINAL_PORT', 5000))  # Lee el puerto desde la variable de entorno, o usa 5000 por defecto
