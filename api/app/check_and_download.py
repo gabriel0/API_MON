@@ -2,9 +2,9 @@ import requests
 import os
 import datetime
 
-URL = 'https://eval-s3-py-script.s3.amazonaws.com/script.sh' 
-LOCAL_SCRIPT_PATH = '/app/script.sh'
-TEMP_SCRIPT_PATH = '/app/temp_script.sh'
+URL = str(os.getenv('S3_SCRIPT_URL'))
+LOCAL_SCRIPT_PATH = str(os.getenv('LOCAL_SCRIPT_PATH'))
+TEMP_SCRIPT_PATH = str(os.getenv('TEMP_SCRIPT_PATH'))
 
 def download_script(url, path):
     """Descargar el script desde la URL y guardarlo en el path especificado."""

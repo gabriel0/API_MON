@@ -7,11 +7,8 @@ import jwt
 
 app = Flask(__name__, static_folder='assets')
 
-# Clave secreta para firmar los tokens (reemplaza con una clave segura)
-SECRET_KEY = 'secretHash'
-
-# Clave maestra secreta (reemplaza con una clave segura)
-MASTER_KEY = 'Pate2001'
+SECRET_KEY = str(os.getenv('SECRET_KEY'))
+MASTER_KEY = str(os.getenv('MASTER_KEY'))
 
 # Función para generar el token
 def generate_token():
@@ -192,5 +189,5 @@ def run_script():
         return jsonify({'details': e.output, 'error': str(e)})
 
 if __name__ == '__main__':
-    port = int(os.getenv('FINAL_PORT', 5000))  # Lee el puerto desde la variable de entorno, o usa 5000 por defecto
+    port = int(os.getenv('FINAL_PORT'))  # Lee el puerto desde la variable de entorno
     app.run(host='0.0.0.0', port=port)
