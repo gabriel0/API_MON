@@ -2,6 +2,11 @@
 FROM python:3.9-slim
 
 ARG port
+# Variables de aplicacion
+## Clave secreta para firmar los tokens
+ENV SECRET_KEY='secretHash'
+## Clave maestra secreta
+ENV MASTER_KEY='Pate2001'
 
 # Instalar cron y dependencias de Python
 RUN apt-get update && apt-get install -y \
@@ -20,19 +25,10 @@ COPY app/main.py app/check_and_download.py app/apidoc.json app/index.html script
 # Convertir el script a formato Unix y darle permisos de ejecución
 RUN dos2unix /app/script.sh && chmod +x /app/script.sh
 
-# Configurar cron job para ejecutar y redirigir la salida a un log
-RUN echo "*/5 * * * * /usr/local/bin/python /app/check_and_download.py >> /var/log/cron.log 2>&1" > /etc/cron.d/script_update \
+# Añadir las variables de entorno y configurar cron job en un solo comando RUN
+RUN echo '*/5 * * * * /usr/local/bin/python /app/check_and_download.py >> /var/log/cron.log 2>&1' >> /etc/cron.d/script_update \
     && chmod 0644 /etc/cron.d/script_update \
     && crontab /etc/cron.d/script_update
-
-# Variables de aplicacion
-ENV S3_SCRIPT_URL = 'https://eval-s3-py-script.s3.amazonaws.com/script.sh' 
-ENV LOCAL_SCRIPT_PATH = '/app/script.sh'
-ENV TEMP_SCRIPT_PATH = '/app/temp_script.sh'
-## Clave secreta para firmar los tokens
-ENV SECRET_KEY = 'secretHash'
-## Clave maestra secreta
-ENV MASTER_KEY = 'Pate2001'
 
 # Exponer el puerto de la API (puedes cambiar $port por un número si es constante)
 ENV FINAL_PORT=${port:-5000}

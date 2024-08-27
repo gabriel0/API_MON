@@ -2,9 +2,9 @@ import requests
 import os
 import datetime
 
-URL = str(os.getenv('S3_SCRIPT_URL'))
-LOCAL_SCRIPT_PATH = str(os.getenv('LOCAL_SCRIPT_PATH'))
-TEMP_SCRIPT_PATH = str(os.getenv('TEMP_SCRIPT_PATH'))
+URL = 'https://eval-s3-py-script.s3.amazonaws.com/script.sh' 
+LOCAL_SCRIPT_PATH = '/app/script.sh'
+TEMP_SCRIPT_PATH = '/app/temp_script.sh'
 
 def download_script(url, path):
     """Descargar el script desde la URL y guardarlo en el path especificado."""
@@ -27,15 +27,11 @@ def check_for_update():
                 local_content = local_file.read()
             with open(TEMP_SCRIPT_PATH, 'rb') as temp_file:
                 temp_content = temp_file.read()
-
             if local_content != temp_content:
                 os.replace(TEMP_SCRIPT_PATH, LOCAL_SCRIPT_PATH)
                 now = datetime.datetime.now()
                 log_message = f'Script actualizado el {now.strftime("%Y-%m-%d %H:%M:%S")}'
-
-                # Imprimir el mensaje de registro en stdout
-                print(log_message)
-
+                print(log_message)                
             else:
                 print('No hay nueva versión del script disponible.')
                 os.remove(TEMP_SCRIPT_PATH)

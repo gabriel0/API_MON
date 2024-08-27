@@ -24,19 +24,17 @@ def require_token(func):
         token = request.headers.get('Authorization')
         if not token:
             return jsonify({'error': 'Token faltante'}), 401
-
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
         except jwt.ExpiredSignatureError:
             return jsonify({'error': 'Token expirado'}), 401
         except jwt.InvalidTokenError:
             return jsonify({'error': 'Token inválido'}), 401
-
         return func(*args, **kwargs)
-    decorated_function.__name__ = func.__name__  # Asigna el nombre original
+    decorated_function.__name__ = func.__name__  # Asigna el nombre original, para evitar el overlap de nombre de funciones
     return decorated_function
 
-# Ruta para documentación
+# Ruta para documentación (apidocjs)
 @app.route('/')
 def home():
     return send_from_directory('.', 'index.html')
@@ -164,8 +162,8 @@ def run_script():
     @apiGroup scripts
     @apiHeader {String} Authorization Token JWT obtenido de /get_token
     @apiParam {json} option Indicar el tipo de opcion: "cpu, disk, mem"
-    @apiSuccess {json} Result Devuelve una lista en formato string de datos relacionados al tipo de "option"
-    @apiSuccessExample {json} Success-Response:
+    @apiSuccess {String} Result Devuelve una lista en formato string de datos relacionados al tipo de "option"
+    @apiSuccessExample {String} Success-Response:
         [
             {
                 "details":"Tamaño de las carpetas en el primer nivel de anidacion en /app:
