@@ -8,7 +8,7 @@ import jwt
 app = Flask(__name__, static_folder='assets')
 
 SECRET_KEY = str(os.getenv('SECRET_KEY','secretHash'))
-MASTER_KEY = str(os.getenv('MASTER_KEY','Pate2001'))
+MASTER_KEY = str(os.getenv('MASTER_KEY','Clave123'))
 
 # Función para generar el token
 def generate_token():
