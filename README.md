@@ -82,10 +82,16 @@ apidoc -i ./ -o ./
 
 ***Esto generará la documentacion de la api dentro de la carpeta app***
 
+**Acceso a la documentacion:**
+
+La documentacion es accesible desde el root de la URL http:xxx:5000/
+
+![alt text](image.png)
+
 ## Construccion de imagen
 
 ```bash
-docker build . -t IMAGEN:TAG --build-arg port=5000
+docker build api/ -t IMAGEN:TAG --build-arg port=5000
 ```
 
 ## Ejecucio de la imagen
@@ -100,15 +106,15 @@ Existe un metodo de obtencion de un token para poder consumir los metodos, el mo
 
 ```powershell
     #WINDOWS
-    Remove-Item Env:http_proxy
-    Remove-Item Env:https_proxy
+    Remove-Item Env:http_proxy #Si aplica remover los proxies
+    Remove-Item Env:https_proxy #Si aplica remover los proxies
     curl -X POST -H "Content-Type: application/json" -d '{"master_key": ""}' http://127.0.0.1:5000/get_token
 ```
 
 ```bash
     #LINUX
-    export http_proxy=""
-    export https_proxy=""
+    export http_proxy="" #Si aplica remover los proxies
+    export https_proxy="" #Si aplica remover los proxies
     curl -X POST -H "Content-Type: application/json" -d '{"master_key": ""}' http://127.0.0.1:5000/get_token
 ```
 
@@ -116,16 +122,16 @@ Existe un metodo de obtencion de un token para poder consumir los metodos, el mo
 
 ```powershell
     #WINDOWS
-    Remove-Item Env:http_proxy
-    Remove-Item Env:https_proxy
-    curl -H "Authorization: Bearer <token>" http://localhost:5000/metrics
+    Remove-Item Env:http_proxy #Si aplica remover los proxies
+    Remove-Item Env:https_proxy #Si aplica remover los proxies
+    curl -H "Authorization: <token>" http://localhost:5000/metrics
 ```
 
 ```bash
     #LINUX
-    export http_proxy=""
-    export https_proxy=""
-    curl -H "Authorization: Bearer <token>" http://localhost:5000/metrics
+    export http_proxy="" #Si aplica remover los proxies
+    export https_proxy="" #Si aplica remover los proxies
+    curl -H "Authorization: <token>" http://localhost:5000/metrics
 ```
 
 ## Uso de run_script
@@ -134,46 +140,46 @@ Existe un metodo de obtencion de un token para poder consumir los metodos, el mo
 
 ```powershell
     #WINDOWS
-    Remove-Item Env:http_proxy
-    Remove-Item Env:https_proxy
-    curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"option": "mem"}' http://127.0.0.1:5000/run_script
+    Remove-Item Env:http_proxy #Si aplica remover los proxies
+    Remove-Item Env:https_proxy #Si aplica remover los proxies
+    curl -X POST -H "Content-Type: application/json" -H "Authorization: <token>" -d '{"option": "mem"}' http://127.0.0.1:5000/run_script
 ```
 
 ```bash
     #LINUX
-    export http_proxy=""
-    export https_proxy=""
-    curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"option": "mem"}' http://127.0.0.1:5000/run_script
+    export http_proxy="" #Si aplica remover los proxies
+    export https_proxy="" #Si aplica remover los proxies
+    curl -X POST -H "Content-Type: application/json" -H "Authorization: <token>" -d '{"option": "mem"}' http://127.0.0.1:5000/run_script
 ```
 
 ### Listar uso de disco por carpetas
 
 ```powershell
     #WINDOWS
-    Remove-Item Env:http_proxy
-    Remove-Item Env:https_proxy
-    curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"option": "disk", "directory": "/"}' http://127.0.0.1:5000/run_script
+    Remove-Item Env:http_proxy #Si aplica remover los proxies
+    Remove-Item Env:https_proxy #Si aplica remover los proxies
+    curl -X POST -H "Content-Type: application/json" -H "Authorization: <token>" -d '{"option": "disk", "directory": "/"}' http://127.0.0.1:5000/run_script
 ```
 
 ```bash
     #LINUX
-    export http_proxy=""
-    export https_proxy=""
-    curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"option": "disk", "directory": "/"}' http://127.0.0.1:5000/run_script
+    export http_proxy="" #Si aplica remover los proxies
+    export https_proxy="" #Si aplica remover los proxies
+    curl -X POST -H "Content-Type: application/json" -H "Authorization: <token>" -d '{"option": "disk", "directory": "/"}' http://127.0.0.1:5000/run_script
 ```
 
 ### Listar procesos por uso de cpu
 
 ```powershell
     #WINDOWS
-    Remove-Item Env:http_proxy
-    Remove-Item Env:https_proxy
-    curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"option": "cpu"}' http://127.0.0.1:5000/run_script
+    Remove-Item Env:http_proxy #Si aplica remover los proxies
+    Remove-Item Env:https_proxy #Si aplica remover los proxies
+    curl -X POST -H "Content-Type: application/json" -H "Authorization: <token>" -d '{"option": "cpu"}' http://127.0.0.1:5000/run_script
 ```
 
 ```bash
     #LINUX
-    export http_proxy=""
-    export https_proxy=""
-    curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"option": "cpu"}' http://127.0.0.1:5000/run_script
+    export http_proxy="" #Si aplica remover los proxies
+    export https_proxy="" #Si aplica remover los proxies
+    curl -X POST -H "Content-Type: application/json" -H "Authorization: <token>" -d '{"option": "cpu"}' http://127.0.0.1:5000/run_script
 ```
