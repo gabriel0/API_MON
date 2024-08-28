@@ -2,9 +2,16 @@
 
 ARCHIVO_DATOS="datos_performance.csv"
 REPORTE_DIARIO="reporte_diario_$(date +%Y-%m-%d).txt"
+SERVER_NAME=$(hostname)
 
-# Procesar datos y generar reporte
-awk -F, '
+# Validar si el archivo de datos existe
+if [ ! -f "$ARCHIVO_DATOS" ]; then
+    echo "Error: El archivo de datos '$ARCHIVO_DATOS' no existe." >&2
+    exit 1 
+fi
+
+# Procesar datos y generar reporte (si el archivo existe)
+if ! awk -F, '
     NR>1 {
         cpu_user_sum+=$2; cpu_sys_sum+=$3; cpu_idle_sum+=$4; iowait_sum+=$5
         disk_read_sum+=$6; disk_write_sum+=$7
@@ -37,4 +44,11 @@ awk -F, '
         printf "* Promedio: %.1f%%\n", iowait_avg
         printf "* Máximo: [calcular desde datos]\n"
     }
-' "$ARCHIVO_DATOS" > "$REPORTE_DIARIO"
+' "$ARCHIVO_DATOS" > "$REPORTE_DIARIO" 2>&1; then
+    # Loguear el error si comando awk fallo
+    echo "Error al generar el reporte: $?" >&2
+    mail -s "Error en reporte de performance $SERVER_NAME" destinatario@ejemplo.com
+else
+    # Enviar el reporte por correo si no hubo errores
+    mail -s "Reporte de Performance $SERVER_NAME $(date +%Y-%m-%d)" destinatario@ejemplo.com < "$REPORTE_DIARIO" 
+fi
