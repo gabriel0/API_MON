@@ -1,0 +1,18 @@
+version: 0.0
+os: linux
+files:
+  - source: script_monitoreo.sh
+    destination: /ruta/al/script/ # Reemplaza con la ruta real
+permissions:
+  - object: /ruta/al/script/script_monitoreo.sh
+    pattern: "**"
+    owner: root
+    group: root
+    mode: 755
+hooks:
+  BeforeInstall:
+    - location: scripts/stop_previous_script.sh # Script para detener el script anterior
+      timeout: 300
+  ApplicationStart:
+    - location: scripts/start_script.sh # Script para iniciar el script actualizado
+      timeout: 300

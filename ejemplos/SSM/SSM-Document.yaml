@@ -1,0 +1,38 @@
+---
+schemaVersion: '0.3'
+description: Actualiza el script de monitoreo en instancias EC2
+assumeRole: 'arn:aws:iam::YOUR_ACCOUNT_ID:role/YOUR_SSM_ROLE' # Reemplaza con tu rol de IAM
+parameters:
+  scriptUrl:
+    type: String
+    description: URL del script de monitoreo actualizado
+    default: 'https://tu-bucket-s3.s3.amazonaws.com/script_monitoreo.sh' # Reemplaza con la URL real
+mainSteps:
+  - name: DescargarScript
+    action: 'aws:downloadContent'
+    inputs:
+      sourceType: 'S3'
+      sourceInfo: '{"path": "{{ scriptUrl }}" }'
+      destinationPath: '/tmp/script_monitoreo.sh'
+  - name: DetenerScriptAnterior
+    action: 'aws:executeScript'
+    inputs:
+      runtime: 'bash'
+      code: |
+        #!/bin/bash
+        pkill -f script_monitoreo.sh # Detener el script anterior si está en ejecución
+  - name: ReemplazarScript
+    action: 'aws:executeScript'
+    inputs:
+      runtime: 'bash'
+      code: |
+        #!/bin/bash
+        mv /tmp/script_monitoreo.sh /ruta/al/script/script_monitoreo.sh # Reemplaza con la ruta real
+        chmod +x /ruta/al/script/script_monitoreo.sh
+  - name: ReiniciarScript
+    action: 'aws:executeScript'
+    inputs:
+      runtime: 'bash'
+      code: |
+        #!/bin/bash
+        /ruta/al/script/script_monitoreo.sh & # Reiniciar el script en segundo plano
