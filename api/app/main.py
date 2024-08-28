@@ -7,8 +7,8 @@ import jwt
 
 app = Flask(__name__, static_folder='assets')
 
-SECRET_KEY = str(os.getenv('SECRET_KEY'))
-MASTER_KEY = str(os.getenv('MASTER_KEY'))
+SECRET_KEY = str(os.getenv('SECRET_KEY','secretHash'))
+MASTER_KEY = str(os.getenv('MASTER_KEY','Pate2001'))
 
 # Función para generar el token
 def generate_token():
@@ -47,7 +47,8 @@ def get_token():
     @apiName get_token
     @apiVersion 1.0.0
     @apiGroup autorizaciones
-    @apiHeader {String} master_key master key que permite obtener un token
+    @apiHeader {String} Content-type application/json
+    @apiHeader {json} master_key master key que permite obtener un token
     @apiSuccess {json} Result Devuelve un token
     @apiSuccessExample {json} Success-Response:
         [
@@ -187,5 +188,5 @@ def run_script():
         return jsonify({'details': e.output, 'error': str(e)})
 
 if __name__ == '__main__':
-    port = int(os.getenv('FINAL_PORT'))  # Lee el puerto desde la variable de entorno
+    port = int(os.getenv('FINAL_PORT',5000))  # Lee el puerto desde la variable de entorno
     app.run(host='0.0.0.0', port=port)
