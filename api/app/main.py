@@ -48,7 +48,7 @@ def get_token():
     @apiVersion 1.0.0
     @apiGroup autorizaciones
     @apiHeader {String} Content-type application/json
-    @apiHeader {json} master_key master key que permite obtener un token
+    @apiBody {json} Object "master_key":"Clave"
     @apiSuccess {json} Result Devuelve un token
     @apiSuccessExample {json} Success-Response:
         [
@@ -162,7 +162,7 @@ def run_script():
     @apiVersion 1.0.0
     @apiGroup scripts
     @apiHeader {String} Authorization Token JWT obtenido de /get_token
-    @apiParam {json} option Indicar el tipo de opcion: "cpu, disk, mem"
+    @apiHeader {json} option Indicar el tipo de opcion: "cpu, disk, mem"
     @apiSuccess {String} Result Devuelve una lista en formato string de datos relacionados al tipo de "option"
     @apiSuccessExample {String} Success-Response:
         [
@@ -189,4 +189,4 @@ def run_script():
 
 if __name__ == '__main__':
     port = int(os.getenv('FINAL_PORT',5000))  # Lee el puerto desde la variable de entorno
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port,debug=True)
