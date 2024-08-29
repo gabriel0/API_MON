@@ -22,6 +22,9 @@ def download_script(url, path):
 def check_for_update():
     """Verificar si hay una nueva versión del script y descargarla si es necesario."""
     if download_script(URL, TEMP_SCRIPT_PATH):
+        # Agregar permiso de ejecución al script descargado
+        os.chmod(TEMP_SCRIPT_PATH, 0o755)  # Permisos -rwxr-xr-x
+
         if os.path.exists(LOCAL_SCRIPT_PATH):
             with open(LOCAL_SCRIPT_PATH, 'rb') as local_file:
                 local_content = local_file.read()
@@ -31,7 +34,7 @@ def check_for_update():
                 os.replace(TEMP_SCRIPT_PATH, LOCAL_SCRIPT_PATH)
                 now = datetime.datetime.now()
                 log_message = f'Script actualizado el {now.strftime("%Y-%m-%d %H:%M:%S")}'
-                print(log_message)                
+                print(log_message)
             else:
                 print('No hay nueva versión del script disponible.')
                 os.remove(TEMP_SCRIPT_PATH)
