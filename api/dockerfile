@@ -6,7 +6,7 @@ ARG port
 ## Clave secreta para firmar los tokens
 ENV SECRET_KEY='secretHash'
 ## Clave maestra secreta
-ENV MASTER_KEY='Pate2001'
+ENV MASTER_KEY='Clave123'
 
 # Instalar cron y dependencias de Python
 RUN apt-get update && apt-get install -y \
