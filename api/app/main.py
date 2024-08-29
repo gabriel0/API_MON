@@ -179,7 +179,7 @@ def run_script():
     directory = data.get('directory', '')
 
     # Comando con la ruta completa
-    command = f"/app/script.sh {option} {directory}"
+    command = f"/usr/bin/sh /app/script.sh {option} {directory}"
     
     try:
         result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
