@@ -86,7 +86,7 @@ apidoc -i ./ -o ./
 
 La documentacion es accesible desde el root de la URL http:xxx:5000/
 
-![alt text](image.png)
+![alt text](resources/image.png)
 
 ## Construccion de imagen
 
