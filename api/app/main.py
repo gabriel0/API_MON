@@ -25,7 +25,7 @@ def require_token(func):
         if not token:
             return jsonify({'error': 'Token faltante'}), 401
         try:
-            payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+            jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
         except jwt.ExpiredSignatureError:
             return jsonify({'error': 'Token expirado'}), 401
         except jwt.InvalidTokenError:
